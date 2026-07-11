@@ -1,0 +1,11 @@
+# Week 1 needs
+anthropic          # or openai, depending which LLM API you use
+python-dotenv       # keeps your API key out of your code
+
+# Coming in Week 2 (RAG)
+chromadb
+sentence-transformers
+
+# Coming in Week 3 (voice + UI)
+openai-whisper
+streamlit
