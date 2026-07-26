@@ -29,7 +29,9 @@ def extract_claims(arabic_text: str) -> list[str]:
         ]
     )
 
-    raw_output = response.content[0].text.strip()
+    #raw_output = response.content[0].text.strip()
+    raw_output = next(
+    block.text for block in response.content if block.type == "text").strip()
     
     if raw_output.startswith("```"):
         raw_output = raw_output.split("```")[1]

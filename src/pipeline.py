@@ -1,6 +1,7 @@
 import json
 from extract_claims import extract_claims
 from generate_verdict import generate_verdict
+from transcribe import transcribe_audio
 
 
 def check_message(arabic_text: str) -> list[dict]: 
@@ -17,13 +18,17 @@ def check_message(arabic_text: str) -> list[dict]:
 
     return results
 
+def check_voice_note(audio_path : str) -> list[dict]:
+    text = transcribe_audio(audio_path)
+    print(f"Transcribed text: {text}")
+    return check_message(text)
+
 
 if __name__ == "__main__":
-    test_message = "شرب الزنجبيل يشفي من السرطان، وزيادة الوزن تزيد من خطر الإصابة بالسكري"
-
-    results = check_message(test_message)
+    test_audio = "/workspaces/Arabic-Health-Checker/data/sources/test_voice_note.mp3"
+    results = check_voice_note(test_audio)
 
     with open("pipeline_output.txt", "w", encoding="utf-8") as f:
         f.write(json.dumps(results, ensure_ascii=False, indent=2))
 
-    print(f"Checked {len(results)} claim(s). Output saved to pipeline_output.txt")
+    print(f"Checked {len(results)} claim(s) from voice note. Output saved to pipeline_output.txt")
