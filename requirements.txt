@@ -3,6 +3,6 @@ python-dotenv       # keeps your API key out of your code
 
 chromadb
 sentence-transformers
-
+torch
 openai-whisper
 streamlit
