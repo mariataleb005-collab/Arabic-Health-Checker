@@ -4,7 +4,7 @@
 
 Bayyinah helps users verify Arabic health information—whether written text or voice notes—against trusted sources such as **WHO EMRO** and the **UAE Ministry of Health and Prevention (MOHAP)**. The system is designed to combat the spread of health misinformation in Arabic-speaking communities by providing transparent, evidence-based explanations instead of unsupported AI opinions.
 
-> **Live Demo:** *https://arabic-health-checker-c9c6j9j9fbgpavhwuk3dg5.streamlit.app/checker*
+> **Live Demo:** *https://arabic-health-checker-c9c6j9j9fbgpavhwuk3dg5.streamlit.app/*
 
 ---
 
