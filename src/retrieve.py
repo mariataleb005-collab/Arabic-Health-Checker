@@ -2,7 +2,7 @@ from sentence_transformers import SentenceTransformer
 import chromadb
 
 model = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
-client = chromadb.PersistentClient(path = "/workspaces/Arabic-Health-Checker/data/chroma_db")
+client = chromadb.PersistentClient(path="data/chroma_db")
 collection = client.get_or_create_collection("health_sources")
 
 def retrieve_relevant_chunks(claim: str, k:int=3) -> list[dict]:

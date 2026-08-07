@@ -52,7 +52,7 @@ def build_index () :
     print ("Loading embedding model..")
     model = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
 
-    client = chromadb.PersistentClient(path = "data/chroma_db")
+    client = chromadb.PersistentClient(path="data/chroma_db")
     collection = client.get_or_create_collection("health_sources")
 
     docs = load_documents()
