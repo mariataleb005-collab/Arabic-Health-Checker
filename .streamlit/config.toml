@@ -1,0 +1,15 @@
+[client]
+toolbarMode = "minimal"
+
+[server]
+fileWatcherType = "none"
+
+[theme]
+base = "light"
+primaryColor = "#073C38"
+backgroundColor = "#FBFCF9"
+secondaryBackgroundColor = "#F0F6F3"
+textColor = "#102724"
+font = "sans serif"
+baseRadius = "large"
+buttonRadius = "large"

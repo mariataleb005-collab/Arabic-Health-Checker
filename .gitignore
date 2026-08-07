@@ -216,3 +216,9 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ChromaDB index (regenerable via build_index.py, no need to track)
+data/chroma_db/
+
+# Temporary test outputs from development
+*_output.txt
