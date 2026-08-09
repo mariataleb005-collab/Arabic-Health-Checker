@@ -5,8 +5,13 @@ from anthropic import Anthropic
 from retrieve import retrieve_relevant_chunks
 
 load_dotenv()
-client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+import streamlit as st
 
+@st.cache_resource
+def get_client():
+    return Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+
+client = get_client()
 SYSTEM_PROMPT = """You are a careful, respectful Arabic-language medical fact-checking assistant.
 
 You will be given a health claim and several retrieved reference passages, each labeled with its source file. Some passages may not actually be relevant to the claim — ignore any that don't directly address it, and don't force a connection that isn't there.

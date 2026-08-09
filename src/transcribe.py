@@ -1,6 +1,12 @@
 import whisper 
 
-model = whisper.load_model("small")
+import streamlit as st
+
+@st.cache_resource
+def get_whisper_model():
+    return whisper.load_model("base")
+
+model = get_whisper_model()
 
 def transcribe_audio (audio_path: str) -> str : 
     """ 

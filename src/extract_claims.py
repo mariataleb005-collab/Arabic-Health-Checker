@@ -10,7 +10,13 @@ from anthropic import Anthropic
 
 load_dotenv()  
 
-client = Anthropic(api_key = os.getenv("ANTHROPIC_API_KEY"))
+import streamlit as st
+
+@st.cache_resource
+def get_client():
+    return Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+
+client = get_client()
 
 SYSTEM_PROMPT = """You are a precise information-extraction tool. Given Arabic text, identify each distinct factual health claim it 
 contains. Return ONLY a JSON array of strings, one per claim, in Arabic. No explanation, no markdown,

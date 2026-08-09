@@ -1,9 +1,19 @@
 from sentence_transformers import SentenceTransformer
 import chromadb
 
-model = SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
-client = chromadb.PersistentClient(path="data/chroma_db")
-collection = client.get_or_create_collection("health_sources")
+import streamlit as st
+
+@st.cache_resource
+def get_model():
+    return SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2")
+
+@st.cache_resource
+def get_collection():
+    client = chromadb.PersistentClient(path="data/chroma_db")
+    return client.get_or_create_collection("health_sources")
+
+model = get_model()
+collection = get_collection()
 
 def retrieve_relevant_chunks(claim: str, k:int=3) -> list[dict]:
     """
