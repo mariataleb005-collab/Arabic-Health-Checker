@@ -13,6 +13,9 @@ def transcribe_audio(audio_path: str) -> str:
     result = model.transcribe(
         audio_path,
         language="ar",
+        task="transcribe",
+        temperature=0,
+        fp16=False,
     )
 
     return result["text"].strip()
