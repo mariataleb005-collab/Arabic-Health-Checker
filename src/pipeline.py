@@ -28,6 +28,17 @@ def check_message(arabic_text: str) -> list[dict]:
     return results
 
 
+def transcribe_voice_note(audio_path: str) -> str:
+    """
+    Transcribes an Arabic voice note and returns the text.
+    Whisper is imported only when this function is called.
+    """
+
+    from transcribe import transcribe_audio
+
+    return transcribe_audio(audio_path)
+
+
 def check_voice_note(audio_path: str) -> list[dict]:
     """
     Voice pipeline:
@@ -35,10 +46,7 @@ def check_voice_note(audio_path: str) -> list[dict]:
     then runs the normal text-checking pipeline.
     """
 
-    # Import Whisper functionality only when voice input is actually used.
-    from transcribe import transcribe_audio
-
-    text = transcribe_audio(audio_path)
+    text = transcribe_voice_note(audio_path)
 
     print(f"Transcribed text: {text}")
 
