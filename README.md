@@ -2,92 +2,153 @@
 
 **An AI-powered Arabic Health Literacy Checker that verifies health claims using Retrieval-Augmented Generation (RAG) grounded in trusted medical evidence.**
 
-Bayyinah helps users verify Arabic health information—whether written text or voice notes—against trusted sources such as **WHO EMRO** and the **UAE Ministry of Health and Prevention (MOHAP)**. The system is designed to combat the spread of health misinformation in Arabic-speaking communities by providing transparent, evidence-based explanations instead of unsupported AI opinions.
+Bayyinah helps users verify Arabic health information—whether written text or voice notes—against trusted sources such as **WHO EMRO** and the **UAE Ministry of Health and Prevention (MOHAP)**.
 
-> **Live Demo:** *https://arabic-health-checker-c9c6j9j9fbgpavhwuk3dg5.streamlit.app/*
+The system is designed to help address health misinformation in Arabic-speaking communities by providing transparent, evidence-grounded explanations rather than unsupported AI-generated answers.
 
----
-
-# Why Bayyinah?
-
-Health misinformation spreads rapidly across social media and messaging platforms, particularly through **forwarded WhatsApp messages and voice notes**. While numerous fact-checking systems exist for English, few support Arabic, and even fewer can process spoken content.
-
-Bayyinah addresses this gap by combining modern language models with a Retrieval-Augmented Generation (RAG) pipeline that grounds every response in trusted medical references.
-
-Rather than generating answers from the language model's internal knowledge, Bayyinah retrieves relevant evidence first and generates verdicts only from those sources.
+> 🌐 **Live Demo:** [Launch Bayyinah Health](https://arabic-health-checker-c9c6j9j9fbgpavhwuk3dg5.streamlit.app/)
 
 ---
 
-# Features
+## Why Bayyinah?
 
-- ✅ Arabic text verification
-- 🎙️ Arabic voice note verification using Whisper
-- 🔍 Automatic extraction of multiple health claims from a single message
-- 📚 Evidence retrieval from WHO EMRO and UAE MOHAP documents
-- ⚖️ Evidence-grounded verdict generation using Claude
-- 🚦 Risk-level assessment (Low • Medium • High)
-- 📖 Transparent explanations with cited medical sources
-- ❓ Honest uncertainty — returns *"معلومات غير كافية"* when evidence is insufficient instead of guessing
+Health misinformation can spread rapidly across social media and messaging platforms, particularly through **forwarded messages and voice notes**.
+
+While many fact-checking tools primarily focus on English text, fewer systems are designed specifically for **Arabic health information**, and fewer still support spoken Arabic content.
+
+Bayyinah addresses this gap through a **Retrieval-Augmented Generation (RAG)** architecture that combines:
+
+- Arabic text and voice processing
+- Health claim extraction
+- Semantic evidence retrieval
+- Trusted medical references
+- Evidence-grounded LLM reasoning
+- Explicit uncertainty when sufficient evidence is unavailable
+
+Rather than asking a language model to answer directly from its internal knowledge, Bayyinah first searches its trusted medical knowledge base for relevant evidence and uses that evidence to evaluate each claim.
+
 ---
 
-# System Architecture
+## Features
 
-```text
-                    Arabic Text / Voice Note
-                              │
-                              ▼
-                 Whisper Speech-to-Text (Voice)
-                              │
-                              ▼
-                  Claim Extraction (Claude)
-                              │
-                              ▼
-             Embedding Generation (MiniLM)
-                              │
-                              ▼
-          ChromaDB Vector Search (WHO/MOHAP)
-                              │
-                              ▼
-           Evidence-Grounded Verdict (Claude)
-                              │
-                              ▼
-      Verdict • Explanation • Risk • Evidence Links
-```
+- ✅ **Arabic text verification**
+- 🎙️ **Arabic voice-note verification** using Whisper
+- 🔍 **Multi-claim extraction** from a single message
+- 🧠 **Semantic search** using multilingual sentence embeddings
+- 📚 **Evidence retrieval** from trusted WHO EMRO and UAE MOHAP documents
+- ⚖️ **Evidence-grounded verdict generation** using Claude
+- 🚦 **Risk-level assessment** — Low, Medium, or High
+- 📖 **Transparent explanations** with supporting medical sources
+- ❓ **Honest uncertainty** — returns *"معلومات غير كافية"* when the available evidence is insufficient instead of guessing
+- 🌐 **Public web interface** built with Streamlit
 
-The pipeline follows a **retrieval-first philosophy**.
+---
 
-If relevant evidence cannot be found, Bayyinah explicitly reports:
+## System Architecture
+
+<p align="center">
+  <img
+    src="assets/Bayyinah_pipeline.png"
+    alt="Bayyinah Arabic Health Fact-Checking RAG Pipeline"
+    width="100%"
+  />
+</p>
+
+<p align="center">
+  <em>
+    End-to-end architecture of Bayyinah Health, from Arabic text or voice input
+    to evidence-grounded health claim verification.
+  </em>
+</p>
+
+Bayyinah follows a **retrieval-first RAG architecture**:
+
+**Arabic Text / Voice Note → Speech Transcription → Claim Extraction → Semantic Retrieval → Evidence-Grounded Verdict**
+
+### 1. User Input
+
+Users can submit either:
+
+- Arabic text
+- An Arabic voice note
+
+### 2. Speech Transcription
+
+For voice input, **OpenAI Whisper** converts the Arabic audio into text.
+
+Text input bypasses this stage and proceeds directly to claim extraction.
+
+### 3. Claim Extraction
+
+The Arabic content is analyzed by **Claude**, which separates the message into individual factual health claims.
+
+This allows Bayyinah to evaluate multiple claims independently rather than assigning one verdict to an entire message.
+
+### 4. Evidence Retrieval
+
+Each extracted claim is transformed into a multilingual sentence embedding using:
+
+`paraphrase-multilingual-MiniLM-L12-v2`
+
+The embedding is compared against medical documents stored in **ChromaDB**, allowing the system to retrieve the most semantically relevant evidence from the trusted knowledge base.
+
+### 5. Verdict Generation
+
+The claim and retrieved medical evidence are provided to **Claude**.
+
+The model is instructed to evaluate the claim using only evidence that is genuinely relevant to the claim.
+
+### 6. Output
+
+For each health claim, Bayyinah returns:
+
+- **Verdict**
+  - مؤكد صحيح — Confirmed True
+  - مؤكد خاطئ — Confirmed False
+  - صحيح جزئيًا — Partially True
+  - معلومات غير كافية — Insufficient Information
+- **Explanation**
+- **Risk level**
+- **Supporting medical sources**, when relevant evidence is available
+
+The pipeline deliberately follows a conservative approach.
+
+If sufficiently relevant evidence cannot be retrieved, Bayyinah reports:
 
 > **معلومات غير كافية** *(Insufficient Information)*
 
-instead of forcing an unsupported answer.
+rather than forcing an unsupported conclusion or citation.
 
 ---
 
-# Technology Stack
+## Technology Stack
 
 | Component | Technology |
-|-----------|------------|
+| --- | --- |
+| Programming Language | Python |
 | User Interface | Streamlit |
-| Large Language Model | Claude (Anthropic API) |
+| Large Language Model | Claude — Anthropic API |
 | Speech Recognition | OpenAI Whisper |
-| Embeddings | paraphrase-multilingual-MiniLM-L12-v2 |
+| Embeddings | `paraphrase-multilingual-MiniLM-L12-v2` |
+| Embedding Library | Sentence Transformers |
 | Vector Database | ChromaDB |
 | Retrieval Method | Retrieval-Augmented Generation (RAG) |
-| Deployment | Hugging Face Spaces |
+| Deployment | Streamlit Community Cloud |
+| Version Control | Git / GitHub |
 
 ---
 
-# Project Structure
+## Project Structure
 
-```
+```text
 Arabic-Health-Checker/
 │
-├── app.py                     # Streamlit entry point
+├── app.py
+│   └── Streamlit entry point, navigation, and application setup
 │
 ├── src/
-|   ├── build_index.py
-|   ├── test_connection.py
+│   ├── build_index.py
+│   ├── test_connection.py
 │   ├── extract_claims.py
 │   ├── retrieve.py
 │   ├── generate_verdict.py
@@ -103,38 +164,39 @@ Arabic-Health-Checker/
 │   └── styles.py
 │
 ├── assets/
-│   └── bayyinah_logo.png
+│   ├── bayyinah_logo.png
+│   └── Bayyinah_pipeline.png
 │
 ├── data/
-│   └── sources/
-│
-├── chroma_db/
+│   ├── sources/
+│   └── chroma_db/
 │
 ├── .streamlit/
 │   └── config.toml
 │
 ├── requirements.txt
+├── packages.txt
 └── README.md
 ```
 
 ---
 
-# Installation
+## Installation
 
-Clone the repository
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/Bayyinah-Health.git
-cd Bayyinah-Health
+git clone https://github.com/yourusername/Arabic-Health-Checker.git
+cd Arabic-Health-Checker
 ```
 
-Create a virtual environment
+### 2. Create a virtual environment
 
 ```bash
 python -m venv venv
 ```
 
-Activate it
+### 3. Activate the environment
 
 **Windows**
 
@@ -148,93 +210,240 @@ venv\Scripts\activate
 source venv/bin/activate
 ```
 
-Install dependencies
+### 4. Install the required Python packages
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Create your environment variables
+### 5. Install FFmpeg
+
+Voice-note transcription with Whisper requires **FFmpeg** to be available on the system.
+
+On Ubuntu/Debian:
 
 ```bash
-cp .env.example .env
+sudo apt-get update
+sudo apt-get install ffmpeg
 ```
 
-Add your Anthropic API key to `.env`
+For Streamlit Community Cloud, the system dependency can be specified in:
 
-Run the application
+```text
+packages.txt
+```
+
+with:
+
+```text
+ffmpeg
+```
+
+### 6. Configure the Anthropic API key
+
+Create a `.env` file in the project root:
+
+```text
+ANTHROPIC_API_KEY=your_api_key_here
+```
+
+Do **not** commit your real API key to GitHub.
+
+When deploying with Streamlit Community Cloud, add the key through the application's **Secrets** settings instead.
+
+### 7. Run the application
 
 ```bash
 streamlit run app.py
 ```
 
+The application should then open in your browser.
+
 ---
 
-# Current Knowledge Base
+## Current Knowledge Base
 
-The prototype currently indexes trusted documents covering:
+The current prototype uses trusted medical documents covering topics including:
 
 - Diabetes
-- Cardiovascular Diseases
+- Cardiovascular diseases
 - Cancer
 - Asthma
 - Influenza
 - Nutrition
 
-Additional medical topics can be added by indexing new trusted documents into the ChromaDB vector database.
+The knowledge base is built from trusted public health documents, primarily from:
+
+- **World Health Organization — Eastern Mediterranean Regional Office (WHO EMRO)**
+- **UAE Ministry of Health and Prevention (MOHAP)**
+
+Additional health topics can be supported by adding trusted documents and rebuilding the ChromaDB vector index.
 
 ---
 
-# Design Principles
+## Retrieval-Augmented Generation
 
-Bayyinah was designed around four principles:
+Bayyinah uses **Retrieval-Augmented Generation (RAG)** to reduce reliance on unsupported model knowledge.
 
-- **Evidence before generation** — retrieve trusted sources first.
-- **No hallucinations** — never fabricate supporting evidence.
-- **Explainability** — every verdict includes a human-readable explanation.
-- **Transparency** — uncertainty is explicitly communicated.
+For every extracted health claim:
 
----
+```text
+Health Claim
+     │
+     ▼
+Multilingual Embedding
+     │
+     ▼
+ChromaDB Semantic Search
+     │
+     ▼
+Relevant Medical Evidence
+     │
+     ▼
+Evidence + Claim
+     │
+     ▼
+Claude
+     │
+     ▼
+Verdict + Explanation + Risk + Sources
+```
 
-# Limitations
-
-- Whisper transcription quality depends on audio clarity and Arabic dialect.
-- The current knowledge base covers only a subset of medical topics.
-- Retrieval quality depends on the available indexed documents.
-- Bayyinah is an educational fact-checking tool and does **not** replace professional medical advice.
-
----
-
-# Future Work
-
-- [ ] Expand the medical knowledge base
-- [ ] Support additional trusted health organizations
-- [ ] WhatsApp integration for real-world deployment
-- [ ] Automatic citation links to original WHO/MOHAP pages
-- [ ] Multilingual support
-- [ ] Evaluation using public Arabic health misinformation datasets
-
----
-
-# Privacy
-
-Bayyinah does not collect, store, or retain user health information.
-
-All indexed documents originate from publicly available official health organizations. User inputs are processed only for verification and are not permanently stored.
+The LLM is therefore used primarily for **claim interpretation and evidence-grounded reasoning**, while the factual basis of the verdict comes from retrieved medical documents.
 
 ---
 
-# License
+## Design Principles
 
-This project is released under the MIT License.
+Bayyinah was designed around four core principles:
+
+### 1. Evidence Before Generation
+
+Trusted medical evidence is retrieved before a verdict is generated.
+
+### 2. Conservative Verification
+
+The system should not force a verdict when the available evidence does not sufficiently address the claim.
+
+### 3. Explainability
+
+Users receive more than a True/False label. Each result includes a short explanation describing why the claim received its verdict.
+
+### 4. Transparency
+
+When sufficient evidence is unavailable, Bayyinah explicitly communicates uncertainty instead of presenting unsupported confidence.
+
+---
+
+## Example
+
+A user might submit:
+
+```text
+شرب الماء الدافئ على الريق يعالج السكري،
+ولقاح الإنفلونزا يسبب الإنفلونزا.
+```
+
+Bayyinah first separates this message into individual health claims.
+
+Each claim is then independently searched against the medical knowledge base and assigned its own:
+
+```text
+Verdict
+Explanation
+Risk Level
+Supporting Sources
+```
+
+This prevents unrelated claims within the same message from being evaluated as a single statement.
+
+---
+
+## Limitations
+
+Bayyinah is currently a prototype and has several important limitations:
+
+- **Whisper transcription quality varies** depending on audio clarity, background noise, speaker speed, and Arabic dialect.
+- The current medical knowledge base covers only a **limited set of health topics**.
+- Retrieval quality depends on the scope and quality of the indexed documents.
+- A missing document in the knowledge base may cause the system to return **Insufficient Information**, even when reliable evidence exists elsewhere.
+- LLM-generated explanations may still contain errors despite retrieval grounding.
+- Bayyinah currently retrieves evidence from a curated local knowledge base rather than searching the entire medical literature in real time.
+- The system has not been clinically validated and should not be used for diagnosis or treatment decisions.
+
+> **Bayyinah is an educational health-information verification tool and does not replace professional medical advice, diagnosis, or treatment.**
+
+---
+
+## Future Work
+
+- [ ] Expand the trusted medical knowledge base
+- [ ] Add more WHO EMRO and MOHAP health topics
+- [ ] Support additional trusted medical organizations and guidelines
+- [ ] Provide direct links to the original WHO/MOHAP evidence pages
+- [ ] Improve Arabic dialect speech recognition
+- [ ] Add multilingual health-claim verification
+- [ ] Evaluate the system using public Arabic misinformation datasets
+- [ ] Develop a formal retrieval and verdict accuracy evaluation framework
+- [ ] Explore WhatsApp integration for real-world accessibility
+- [ ] Improve source-level citation traceability
+- [ ] Optimize model loading and memory usage for cloud deployment
+
+---
+
+## Privacy
+
+Bayyinah is designed to minimize unnecessary handling of user information.
+
+The medical knowledge base consists of publicly available health information from trusted organizations.
+
+The application does not intentionally maintain a permanent database of submitted health claims or voice notes.
+
+Temporary audio files used during voice-note processing are removed after transcription and verification.
+
+Users should nevertheless avoid submitting personally identifiable or sensitive medical information when using the public demonstration.
+
+---
+
+## Deployment
+
+Bayyinah is publicly deployed using **Streamlit Community Cloud**.
+
+> 🌐 **Try Bayyinah:** [Launch the live application](https://arabic-health-checker-c9c6j9j9fbgpavhwuk3dg5.streamlit.app/)
+
+The application is connected to the GitHub repository, allowing updates pushed to the repository to be reflected in the deployed application.
+
+API credentials are managed through Streamlit Secrets and are not stored directly in the source code.
+
+---
+
+## License
+
+This project is released under the **MIT License**.
+
+See the `LICENSE` file for details.
 
 ---
 
 ## Acknowledgements
 
-- World Health Organization (WHO EMRO)
-- UAE Ministry of Health and Prevention (MOHAP)
-- Anthropic Claude API
-- OpenAI Whisper
-- Sentence Transformers
-- ChromaDB
+Bayyinah makes use of technologies and publicly available resources from:
+
+- **World Health Organization — Eastern Mediterranean Regional Office (WHO EMRO)**
+- **UAE Ministry of Health and Prevention (MOHAP)**
+- **Anthropic Claude API**
+- **OpenAI Whisper**
+- **Sentence Transformers**
+- **ChromaDB**
+- **Streamlit**
+
+---
+
+<p align="center">
+  <img src="assets/bayyinah_logo.png" alt="Bayyinah Health Logo" width="110">
+</p>
+
+<p align="center">
+  <strong>بَيِّنة — Bayyinah Health</strong><br>
+  Trusted • Transparent • Evidence-Based
+</p>
