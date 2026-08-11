@@ -186,7 +186,7 @@ Arabic-Health-Checker/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/Arabic-Health-Checker.git
+git clone https://github.com/mariataleb005-collab/Arabic-Health-Checker.git
 cd Arabic-Health-Checker
 ```
 
